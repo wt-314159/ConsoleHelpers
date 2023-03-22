@@ -81,6 +81,8 @@ namespace ConsoleHelpers
 
             if (SubItems != null && SubItems.Count > 0)
             {
+                builder.AppendLine("Option:");
+                builder.AppendLine();
                 for (int i = 0; i < SubItems.Count; i++)
                 {
                     builder.Append(i);
