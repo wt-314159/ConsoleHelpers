@@ -19,7 +19,7 @@ namespace ConsoleHelpers
 
         public string? Description { get; }
 
-        public bool ShowMainMenuOption { get; }
+        public bool ShowMainMenuOption { get; set; }
 
         public Action? OnSelection { get; }
 
@@ -32,6 +32,7 @@ namespace ConsoleHelpers
             OnSelection = action;
             SubItems = null;
             Description = description;
+            ShowMainMenuOption = true;
         }
 
         public MenuItem(string name, string? description = null, params IMenuItem[] subItems)
@@ -40,6 +41,7 @@ namespace ConsoleHelpers
             SubItems = subItems;
             Description = description;
             OnSelection = null;
+            ShowMainMenuOption = true;
         }
 
 
