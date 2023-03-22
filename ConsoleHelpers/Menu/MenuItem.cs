@@ -97,7 +97,7 @@ namespace ConsoleHelpers
                 var input = ConsoleApp.GetInput(s =>
                         s != null &&
                         int.TryParse(s, out int i)
-                        && i > 0 && i < maxIndex,
+                        && i >= 0 && i < maxIndex,
                     "Invalid entry, enter one of the numbers from the menu above.");
                 if (int.TryParse(input, out int index))
                 {
