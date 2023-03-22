@@ -68,9 +68,17 @@ namespace ConsoleHelpers
 
         public virtual void Select(int width, string[] parameters)
         {
+            if (parameters?.Length > 0 && (parameters[0] == "help" || parameters[0] == "-help"))
+            {
+                Display(width);
+                Console.WriteLine();
+                Console.WriteLine();
+                var input = Console.ReadLine();
+                Select(width, input?.Split(' ') ?? Array.Empty<string>());
+            }
             if (OnSelectionWithParams != null)
             {
-                OnSelectionWithParams(parameters);
+                OnSelectionWithParams(parameters ?? Array.Empty<string>());
             }
             else if (OnSelection != null)
             {
