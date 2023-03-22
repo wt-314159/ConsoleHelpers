@@ -19,5 +19,11 @@ namespace ConsoleHelpers.Menu
         {
             ShowMainMenuOption = false;
         }
+
+        public void Show(int width = 0)
+        {
+            width = width == 0 ? Console.WindowWidth / 2 : width;
+            Console.WriteLine(this.Display(width));
+        }
     }
 }

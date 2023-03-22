@@ -14,6 +14,7 @@ namespace ConsoleHelpers
         protected static string? _separator;
         protected static int _separatorWidth;
 
+        public IMenuItem? MainMenu { get; }
 
         public string Name { get; }
 
@@ -44,8 +45,20 @@ namespace ConsoleHelpers
             ShowMainMenuOption = true;
         }
 
+        public virtual void Select(int width)
+        {
+            if (OnSelection != null)
+            {
+                OnSelection();
+            }
+            else
+            {
+                Display(width);
+            }
+        }
 
-        public virtual string Display(int width)
+
+        public virtual void Display(int width)
         {
             var builder = new StringBuilder();
             builder.AppendLine(GetSeparator(width));
@@ -73,7 +86,28 @@ namespace ConsoleHelpers
                 builder.Append(_tab);
                 builder.Append(_exitToMain);
             }
-            return builder.ToString();
+            Console.WriteLine(builder.ToString());
+
+            if (SubItems != null && SubItems.Count > 0)
+            {
+                var maxIndex = ShowMainMenuOption ? SubItems.Count + 1 : SubItems.Count;
+                var input = ConsoleApp.GetInput(s =>
+                        s != null &&
+                        int.TryParse(s, out int i)
+                        && i > 0 && i < maxIndex,
+                    "Invalid entry, enter one of the numbers from the menu above.");
+                if (int.TryParse(input, out int index))
+                {
+                    if (index == SubItems.Count)
+                    {
+                        MainMenu?.Display(width);
+                    }
+                    else if (index >= 0 && index < SubItems.Count)
+                    {
+                        SubItems[index].Select(width);
+                    }
+                }
+            }
         }
 
 
