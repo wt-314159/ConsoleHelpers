@@ -36,6 +36,9 @@ namespace ConsoleHelpers
             ShowMainMenuOption = true;
         }
 
+        public MenuItem(string name, params IMenuItem[] subItems)
+            : this(name, null, subItems) { }
+
         public MenuItem(string name, string? description = null, params IMenuItem[] subItems)
         {
             Name = name;
