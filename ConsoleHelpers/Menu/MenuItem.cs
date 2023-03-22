@@ -71,6 +71,10 @@ namespace ConsoleHelpers
         public virtual void Display(int width)
         {
             var builder = new StringBuilder();
+            builder.AppendLine();
+            builder.AppendLine();
+            builder.AppendLine();
+
             builder.AppendLine(GetSeparator(width));
             builder.AppendLineCentred(Name, width);
             builder.AppendLine(GetSeparator(width));
