@@ -12,7 +12,7 @@ namespace ConsoleHelpers
         string? Description { get; }
         Action? OnSelection { get; }
         public IList<IMenuItem>? SubItems { get; }
-        public IMenuItem? MainMenu { get; }
+        public IMenuItem? MainMenu { get; set;  }
         bool ShowMainMenuOption { get; }
 
         void Display(int width);

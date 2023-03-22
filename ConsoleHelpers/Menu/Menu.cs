@@ -18,6 +18,10 @@ namespace ConsoleHelpers
             : base(title, description, menuItems)
         {
             ShowMainMenuOption = false;
+            foreach (var item in menuItems)
+            {
+                item.MainMenu = this;
+            }
         }
 
         public void Show(int width = 0)

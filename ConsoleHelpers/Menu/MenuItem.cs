@@ -14,7 +14,7 @@ namespace ConsoleHelpers
         protected static string? _separator;
         protected static int _separatorWidth;
 
-        public IMenuItem? MainMenu { get; }
+        public IMenuItem? MainMenu { get; set; }
 
         public string Name { get; }
 
@@ -46,6 +46,13 @@ namespace ConsoleHelpers
             Description = description;
             OnSelection = null;
             ShowMainMenuOption = true;
+            if (MainMenu != null)
+            {
+                foreach (var item in subItems)
+                {
+                    item.MainMenu = this.MainMenu;
+                }
+            }
         }
 
         public virtual void Select(int width)
@@ -85,7 +92,7 @@ namespace ConsoleHelpers
 
             if (ShowMainMenuOption)
             {
-                builder.Append(SubItems?.Count + 1);
+                builder.Append(SubItems?.Count);
                 builder.Append(_tab);
                 builder.Append(_exitToMain);
             }
