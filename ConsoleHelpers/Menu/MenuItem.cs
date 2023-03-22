@@ -24,6 +24,8 @@ namespace ConsoleHelpers
 
         public Action? OnSelection { get; }
 
+        public Action<string[]>? OnSelectionWithParams { get; }
+
         public IList<IMenuItem>? SubItems { get; }
 
 
@@ -55,9 +57,22 @@ namespace ConsoleHelpers
             }
         }
 
-        public virtual void Select(int width)
+        public MenuItem(string name, Action<string[]> action, string? description = null)
         {
-            if (OnSelection != null)
+            Name = name;
+            OnSelectionWithParams = action;
+            SubItems = null;
+            Description = description;
+            ShowMainMenuOption = true;
+        }
+
+        public virtual void Select(int width, string[] parameters)
+        {
+            if (OnSelectionWithParams != null)
+            {
+                OnSelectionWithParams(parameters);
+            }
+            else if (OnSelection != null)
             {
                 OnSelection();
             }
@@ -108,12 +123,12 @@ namespace ConsoleHelpers
             if (SubItems != null && SubItems.Count > 0)
             {
                 var maxIndex = ShowMainMenuOption ? SubItems.Count + 1 : SubItems.Count;
-                var input = ConsoleApp.GetInput(s =>
+                var input = ConsoleApp.GetInputWithParams(s =>
                         s != null &&
-                        int.TryParse(s, out int i)
+                        int.TryParse(s.FirstOrDefault(), out int i)
                         && i >= 0 && i < maxIndex,
                     "Invalid entry, enter one of the numbers from the menu above.");
-                if (int.TryParse(input, out int index))
+                if (int.TryParse(input?.FirstOrDefault(), out int index))
                 {
                     if (index == SubItems.Count)
                     {
@@ -121,7 +136,7 @@ namespace ConsoleHelpers
                     }
                     else if (index >= 0 && index < SubItems.Count)
                     {
-                        SubItems[index].Select(width);
+                        SubItems[index].Select(width, input.SkipFirst());
                     }
                 }
             }

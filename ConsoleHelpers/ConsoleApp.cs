@@ -29,7 +29,7 @@
         /// <param name="failureMessage">The message to show to the user if the input doesn't match the <paramref name="predicate"/>.</param>
         /// <param name="separator">The character to split the input based on. The default is space (' ').</param>
         /// <returns>The user input that matches the <paramref name="predicate"/>, split by the <paramref name="separator"/>.</returns>
-        public static string[]? GetInput(Func<string[]?, bool> predicate, string failureMessage, char separator = ' ')
+        public static string[]? GetInputWithParams(Func<string[]?, bool> predicate, string failureMessage, char separator = ' ')
         {
             var input = Console.ReadLine();
             var inputArray = input?.Split(separator, StringSplitOptions.RemoveEmptyEntries);

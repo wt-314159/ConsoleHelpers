@@ -10,12 +10,11 @@ namespace ConsoleHelpers
     {
         string Name { get; }
         string? Description { get; }
-        Action? OnSelection { get; }
         public IList<IMenuItem>? SubItems { get; }
         public IMenuItem? MainMenu { get; set;  }
         bool ShowMainMenuOption { get; }
 
         void Display(int width);
-        void Select(int width);
+        void Select(int width, string[] parameters);
     }
 }
