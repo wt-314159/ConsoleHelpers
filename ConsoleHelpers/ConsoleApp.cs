@@ -1,6 +1,4 @@
-﻿using ConsoleHelpers.Menu;
-
-namespace ConsoleHelpers
+﻿namespace ConsoleHelpers
 {
     public static class ConsoleApp
     {
