@@ -10,7 +10,7 @@ namespace ConsoleHelpers
     public class MenuItem : IMenuItem
     {
         protected const string _tab = ".\t";
-        protected const string _exitToMain = "Exit to Main Menu";
+        protected const string _exitToMain = "Back to Main Menu";
         protected static string? _separator;
         protected static int _separatorWidth;
 
@@ -100,7 +100,8 @@ namespace ConsoleHelpers
             {
                 builder.Append(SubItems?.Count);
                 builder.Append(_tab);
-                builder.Append(_exitToMain);
+                builder.AppendLine(_exitToMain);
+                builder.AppendLine(GetSeparator(width));
             }
             Console.WriteLine(builder.ToString());
 
