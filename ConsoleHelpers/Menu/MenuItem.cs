@@ -7,39 +7,25 @@ using System.Threading.Tasks;
 
 namespace ConsoleHelpers
 {
-    public class MenuItem : IMenuItem
+    public class MenuItem : MenuItemBase<IMenuItem>, IMenuItem
     {
-        protected const string _exitToMain = "Back to Main Menu";
-
-        public IMenuItem? MainMenu { get; set; }
-
-        public string Name { get; }
-
-        public string? Description { get; }
-
         public Action? OnSelection { get; }
 
         public Action<string[]>? OnSelectionWithParams { get; }
 
-        public IList<IMenuItem>? SubItems { get; }
-
 
         public MenuItem(string name, Action action, string? description = null)
+            : base(name, description, null)
         {
-            Name = name;
             OnSelection = action;
-            SubItems = null;
-            Description = description;
         }
 
         public MenuItem(string name, params IMenuItem[] subItems)
             : this(name, null, subItems) { }
 
         public MenuItem(string name, string? description = null, params IMenuItem[] subItems)
+            : base(name, description, subItems)
         {
-            Name = name;
-            SubItems = subItems;
-            Description = description;
             OnSelection = null;
             if (MainMenu != null)
             {
@@ -51,22 +37,20 @@ namespace ConsoleHelpers
         }
 
         public MenuItem(string name, Action<string[]> action, string? description = null)
+            : base(name, description, null)
         {
-            Name = name;
             OnSelectionWithParams = action;
-            SubItems = null;
-            Description = description;
         }
 
-        public virtual void Select(MenuSettings settings, string[] parameters)
+        public virtual void Select(MenuSettings settings, string[]? parameters)
         {
             if (parameters?.Length > 0 && (parameters[0] == "help" || parameters[0] == "-help"))
             {
-                Display(settings, parameters ?? Array.Empty<string>());
+                Display(settings, parameters);
                 Console.WriteLine();
                 Console.WriteLine();
                 var input = Console.ReadLine();
-                Select(settings, input?.Split(' ') ?? Array.Empty<string>());
+                Select(settings, input?.Split(' '));
             }
             if (OnSelectionWithParams != null)
             {
@@ -78,62 +62,43 @@ namespace ConsoleHelpers
             }
             else
             {
-                Display(settings, parameters ?? Array.Empty<string>());
+                Display(settings, parameters);
             }
         }
 
 
-        public virtual void Display(MenuSettings settings, string[] parameters)
+        public virtual void Display(MenuSettings settings, string[]? parameters)
         {
-            var width = settings.Width;
             var showMainMenu = settings.ShowMainMenuOption && MainMenu != null;
+            ShowMenuOptions(settings);
 
-            var builder = new StringBuilder();
-            builder.AppendLines(3);
-            builder.AppendTitle(Name, width);
 
             if (SubItems != null && SubItems.Count > 0)
             {
-                builder.AppendOptions(SubItems);
-            }
-            else if (Description != null)
-            {
-                builder.AppendLongStringLine(Description, width);
-            }
-            builder.AppendSeparatorLine(width);
-
-            ShowMainMenuOptionIfTrue(showMainMenu, builder, width);
-            Console.WriteLine(builder.ToString());
-
-            if (SubItems != null && SubItems.Count > 0)
-            {
-                var maxIndex = showMainMenu ? SubItems.Count + 1 : SubItems.Count;
-
-                var input = ConsoleApp.GetOptionChoiceWithParams(maxIndex);
-
-                if (int.TryParse(input?.FirstOrDefault(), out int index))
+                int index = GetUserSelection(showMainMenu, out string[]? input);
+                if (index == -1)
                 {
-                    if (index == SubItems.Count && showMainMenu)
-                    {
-                        MainMenu?.Display(settings, input.SkipFirst());
-                    }
-                    else if (index >= 0 && index < SubItems.Count)
-                    {
-                        SubItems[index].Select(settings, input.SkipFirst());
-                    }
+                    // Should never happen, but we should still handle gracefully
+                    Console.WriteLine("Error parsing input, exiting...");
+                }
+                if (index == SubItems.Count && showMainMenu)
+                {
+                    MainMenu?.Display(settings, input);
+                }
+                else if (index >= 0 && index < SubItems.Count)
+                {
+                    SubItems[index].Select(settings, input);
                 }
             }
-        }
-
-        protected virtual void ShowMainMenuOptionIfTrue(
-            bool showMainMenu, 
-            StringBuilder builder,
-            int width)
-        {
-            if (showMainMenu)
+            else
             {
-                builder.AppendOption(SubItems?.Count ?? 0, _exitToMain);
-                builder.AppendSeparatorLine(width);
+                // Shouldn't be displayed unless there are sub items,
+                // however the display method is public so it could 
+                // always be called by external code, so we have to
+                // account for every possibility.
+                // In this case, just show 2 options, select the action
+                // or escape to main menu (if there show main menu = true)
+                Select(settings, Array.Empty<string>());    
             }
         }
     }

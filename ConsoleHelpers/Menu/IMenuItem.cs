@@ -6,14 +6,9 @@ using System.Threading.Tasks;
 
 namespace ConsoleHelpers
 {
-    public interface IMenuItem
+    public interface IMenuItem : IDisplayableMenuItem<IMenuItem>
     {
-        string Name { get; }
-        string? Description { get; }
-        public IList<IMenuItem>? SubItems { get; }
-        public IMenuItem? MainMenu { get; set;  }
-
-        void Display(MenuSettings settings, string[] parameters);
-        void Select(MenuSettings settings, string[] parameters);
+        void Display(MenuSettings settings, string[]? parameters);
+        void Select(MenuSettings settings, string[]? parameters);
     }
 }

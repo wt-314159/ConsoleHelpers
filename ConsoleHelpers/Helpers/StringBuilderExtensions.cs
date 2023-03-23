@@ -83,16 +83,16 @@ namespace ConsoleHelpers
 
         internal static StringBuilder AppendOptions(
             this StringBuilder builder,
-            IList<IMenuItem> options,
+            IList<string> names,
             string tab = _tab,
             string header = "Options:")
         {
             builder.AppendLine(header);
             builder.AppendLine();
 
-            for (int i = 0; i < options.Count; i++)
+            for (int i = 0; i < names.Count; i++)
             {
-                builder.AppendOption(i, options[i].Name, tab);
+                builder.AppendOption(i, names[i], tab);
             }
             return builder;
         }
