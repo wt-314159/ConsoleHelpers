@@ -85,5 +85,14 @@
                 }
             }
         }
+
+        internal static string[]? GetOptionChoiceWithParams(
+            int maxIndex,
+            string failMsg = "Invalid entry, enter one of the numbers from the menu above.")
+            => GetInputWithParams(s =>
+                        s != null &&
+                        int.TryParse(s.FirstOrDefault(), out int i)
+                        && i >= 0 && i < maxIndex,
+                    failMsg);
     }
 }

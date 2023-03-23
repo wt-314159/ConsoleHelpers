@@ -1,7 +1,7 @@
-﻿using ConsoleHelpers.Helpers;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -9,18 +9,13 @@ namespace ConsoleHelpers
 {
     public class MenuItem : IMenuItem
     {
-        protected const string _tab = ".\t";
         protected const string _exitToMain = "Back to Main Menu";
-        protected static string? _separator;
-        protected static int _separatorWidth;
 
         public IMenuItem? MainMenu { get; set; }
 
         public string Name { get; }
 
         public string? Description { get; }
-
-        public bool ShowMainMenuOption { get; set; }
 
         public Action? OnSelection { get; }
 
@@ -35,7 +30,6 @@ namespace ConsoleHelpers
             OnSelection = action;
             SubItems = null;
             Description = description;
-            ShowMainMenuOption = true;
         }
 
         public MenuItem(string name, params IMenuItem[] subItems)
@@ -47,7 +41,6 @@ namespace ConsoleHelpers
             SubItems = subItems;
             Description = description;
             OnSelection = null;
-            ShowMainMenuOption = true;
             if (MainMenu != null)
             {
                 foreach (var item in subItems)
@@ -63,18 +56,17 @@ namespace ConsoleHelpers
             OnSelectionWithParams = action;
             SubItems = null;
             Description = description;
-            ShowMainMenuOption = true;
         }
 
-        public virtual void Select(int width, string[] parameters)
+        public virtual void Select(MenuSettings settings, string[] parameters)
         {
             if (parameters?.Length > 0 && (parameters[0] == "help" || parameters[0] == "-help"))
             {
-                Display(width);
+                Display(settings, parameters ?? Array.Empty<string>());
                 Console.WriteLine();
                 Console.WriteLine();
                 var input = Console.ReadLine();
-                Select(width, input?.Split(' ') ?? Array.Empty<string>());
+                Select(settings, input?.Split(' ') ?? Array.Empty<string>());
             }
             if (OnSelectionWithParams != null)
             {
@@ -86,82 +78,63 @@ namespace ConsoleHelpers
             }
             else
             {
-                Display(width);
+                Display(settings, parameters ?? Array.Empty<string>());
             }
         }
 
 
-        public virtual void Display(int width)
+        public virtual void Display(MenuSettings settings, string[] parameters)
         {
-            var builder = new StringBuilder();
-            builder.AppendLine();
-            builder.AppendLine();
-            builder.AppendLine();
+            var width = settings.Width;
+            var showMainMenu = settings.ShowMainMenuOption && MainMenu != null;
 
-            builder.AppendLine(GetSeparator(width));
-            builder.AppendLineCentred(Name, width);
-            builder.AppendLine(GetSeparator(width));
+            var builder = new StringBuilder();
+            builder.AppendLines(3);
+            builder.AppendTitle(Name, width);
 
             if (SubItems != null && SubItems.Count > 0)
             {
-                builder.AppendLine("Option:");
-                builder.AppendLine();
-                for (int i = 0; i < SubItems.Count; i++)
-                {
-                    builder.Append(i);
-                    builder.Append(_tab);
-                    builder.AppendLine(SubItems[i].Name);
-                }
+                builder.AppendOptions(SubItems);
             }
             else if (Description != null)
             {
                 builder.AppendLongStringLine(Description, width);
             }
-            builder.AppendLine(GetSeparator(width));
+            builder.AppendSeparatorLine(width);
 
-            if (ShowMainMenuOption)
-            {
-                builder.Append(SubItems?.Count);
-                builder.Append(_tab);
-                builder.AppendLine(_exitToMain);
-                builder.AppendLine(GetSeparator(width));
-            }
+            ShowMainMenuOptionIfTrue(showMainMenu, builder, width);
             Console.WriteLine(builder.ToString());
 
             if (SubItems != null && SubItems.Count > 0)
             {
-                var maxIndex = ShowMainMenuOption ? SubItems.Count + 1 : SubItems.Count;
-                var input = ConsoleApp.GetInputWithParams(s =>
-                        s != null &&
-                        int.TryParse(s.FirstOrDefault(), out int i)
-                        && i >= 0 && i < maxIndex,
-                    "Invalid entry, enter one of the numbers from the menu above.");
+                var maxIndex = showMainMenu ? SubItems.Count + 1 : SubItems.Count;
+
+                var input = ConsoleApp.GetOptionChoiceWithParams(maxIndex);
+
                 if (int.TryParse(input?.FirstOrDefault(), out int index))
                 {
-                    if (index == SubItems.Count)
+                    if (index == SubItems.Count && showMainMenu)
                     {
-                        MainMenu?.Display(width);
+                        MainMenu?.Display(settings, input.SkipFirst());
                     }
                     else if (index >= 0 && index < SubItems.Count)
                     {
-                        SubItems[index].Select(width, input.SkipFirst());
+                        SubItems[index].Select(settings, input.SkipFirst());
                     }
                 }
             }
         }
 
-
-
-        protected static string GetSeparator(int width, char separatorChar = '=')
+        protected virtual void ShowMainMenuOptionIfTrue(
+            bool showMainMenu, 
+            StringBuilder builder,
+            int width)
         {
-            if (width != _separatorWidth || _separator == null)
+            if (showMainMenu)
             {
-                var builder = new StringBuilder(width);
-                builder.Append(separatorChar, width);
-                _separator = builder.ToString();
-                _separatorWidth = width;
+                builder.AppendOption(SubItems?.Count ?? 0, _exitToMain);
+                builder.AppendSeparatorLine(width);
             }
-            return _separator;
         }
     }
 }

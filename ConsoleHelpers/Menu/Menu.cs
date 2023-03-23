@@ -17,17 +17,20 @@ namespace ConsoleHelpers
         public Menu(string title, string? description, params IMenuItem[] menuItems)
             : base(title, description, menuItems)
         {
-            ShowMainMenuOption = false;
             foreach (var item in menuItems)
             {
                 item.MainMenu = this;
             }
         }
 
-        public void Show(int width = 0)
+        public void Show(MenuSettings settings)
         {
-            width = width == 0 ? Console.WindowWidth / 2 : width;
-            Display(width);
+            Display(settings, Array.Empty<string>());
+        }
+
+        protected override void ShowMainMenuOptionIfTrue(bool _, StringBuilder __, int ___)
+        {
+            return;
         }
     }
 }

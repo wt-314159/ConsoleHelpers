@@ -8,6 +8,8 @@ namespace ConsoleHelpers
 {
     internal static class StringBuilderExtensions
     {
+        internal const string _tab = ".\t";
+
         internal static StringBuilder AppendCentred(this StringBuilder builder, string value, int width)
         {
             var leftIndent = (width - value.Length) / 2;
@@ -48,6 +50,62 @@ namespace ConsoleHelpers
         {
             builder.AppendLongString(value, width);
             return builder.AppendLine();
+        }
+
+        internal static StringBuilder AppendLines(this StringBuilder builder, int numLines)
+        {
+            for (int i = 0; i < numLines; i++)
+            {
+                builder.AppendLine();
+            }
+            return builder;
+        }
+
+        internal static StringBuilder AppendSeparatorLine(
+            this StringBuilder builder, 
+            int width, 
+            char separator = '-')
+        {
+            builder.Append(separator, width);
+            return builder.AppendLine();
+        }
+
+        internal static StringBuilder AppendOption(
+            this StringBuilder builder, 
+            int index,
+            string optionName,
+            string tab = _tab)
+        {
+            builder.Append(index);
+            builder.Append(tab);
+            return builder.AppendLine(optionName);
+        }
+
+        internal static StringBuilder AppendOptions(
+            this StringBuilder builder,
+            IList<IMenuItem> options,
+            string tab = _tab,
+            string header = "Options:")
+        {
+            builder.AppendLine(header);
+            builder.AppendLine();
+
+            for (int i = 0; i < options.Count; i++)
+            {
+                builder.AppendOption(i, options[i].Name, tab);
+            }
+            return builder;
+        }
+
+        internal static StringBuilder AppendTitle(
+            this StringBuilder builder,
+            string title,
+            int width,
+            char separator = '-')
+        {
+            builder.AppendSeparatorLine(width, separator);
+            builder.AppendLineCentred(title, width);
+            return builder.AppendSeparatorLine(width, separator);
         }
     }
 }
