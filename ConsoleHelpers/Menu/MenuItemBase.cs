@@ -39,7 +39,7 @@ namespace ConsoleHelpers
 
             var builder = new StringBuilder();
             builder.AppendLines(3);
-            builder.AppendTitle(Name, width);
+            builder.AppendTitle(Name, settings);
 
             if (SubItems != null && SubItems.Count > 0)
             {
@@ -49,21 +49,21 @@ namespace ConsoleHelpers
             {
                 builder.AppendLongStringLine(Description, width);
             }
-            builder.AppendSeparatorLine(width);
+            builder.AppendSeparatorLine(settings);
 
-            ShowMainMenuOptionIfTrue(showMainMenu, builder, width);
+            ShowMainMenuOptionIfTrue(showMainMenu, builder, settings);
             Console.WriteLine(builder.ToString());
         }
 
         protected virtual void ShowMainMenuOptionIfTrue(
             bool showMainMenu,
             StringBuilder builder,
-            int width)
+            MenuSettings settings)
         {
             if (showMainMenu)
             {
                 builder.AppendOption(SubItems?.Count ?? 0, _exitToMain);
-                builder.AppendSeparatorLine(width);
+                builder.AppendSeparatorLine(settings);
             }
         }
 

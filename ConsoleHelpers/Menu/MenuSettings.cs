@@ -11,5 +11,12 @@ namespace ConsoleHelpers
         public int Width { get; }
         public char Separator { get; }
         public bool ShowMainMenuOption { get; }
+
+        public MenuSettings(int width, bool showMainMenuOption = true, char separator = '-')
+        {
+            Width = width;
+            Separator = separator;
+            ShowMainMenuOption = showMainMenuOption;
+        }
     }
 }

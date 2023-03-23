@@ -62,6 +62,11 @@ namespace ConsoleHelpers
         }
 
         internal static StringBuilder AppendSeparatorLine(
+            this StringBuilder builder,
+            MenuSettings settings)
+            => builder.AppendSeparatorLine(settings.Width, settings.Separator);
+
+        internal static StringBuilder AppendSeparatorLine(
             this StringBuilder builder, 
             int width, 
             char separator = '-')
@@ -96,6 +101,12 @@ namespace ConsoleHelpers
             }
             return builder;
         }
+
+        internal static StringBuilder AppendTitle(
+            this StringBuilder builder,
+            string title,
+            MenuSettings settings)
+            => builder.AppendTitle(title, settings.Width, settings.Separator);
 
         internal static StringBuilder AppendTitle(
             this StringBuilder builder,
