@@ -45,16 +45,20 @@
         /// <summary>
         /// Method to loop and perform the given <paramref name="action"/> until the user enters 
         /// anything except for 'Y' or 'y', showing the <paramref name="repeatMessage"/> message
-        /// each time.
+        /// each time. The user can also enter 'Esc' to indicate they want to exit the program.
         /// </summary>
         /// <param name="action">The Action to perform every loop. Put your program code here.</param>
         /// <param name="repeatMessage">The message to show the user at the end of each loop, 
         /// to ask if they want to keep looping or exit.</param>
         /// <param name="exitMessage">The message to show the user when exiting the program.</param>
-        public static void LoopProgram(
+        /// <param name="endLoopMessage">The message to show the user when ending the loop 
+        /// (not exiting the program). By default this is null and no message is shown.</param>
+        /// <returns>True if the user pressed 'Esc', false if they pressed any key other than 'y'.</returns>
+        public static bool LoopProgram(
             Action action,
-            string repeatMessage = "To run again, press 'y', to stop press 'Esc'",
-            string exitMessage = "Exiting program...")
+            string repeatMessage = "To run again, press 'y', to stop press any other key, to quit press 'Esc'",
+            string exitMessage = "Exiting program...",
+            string? endLoopMessage = null)
         {
             while (true)
             {
@@ -65,10 +69,15 @@
                 
 
                 var input = Console.ReadKey();
-                if (input.Key == ConsoleKey.Escape || char.ToLower(input.KeyChar) != 'y')
+                if (input.Key == ConsoleKey.Escape)
                 {
                     Console.WriteLine(exitMessage);
-                    break;
+                    return true;
+                }
+                else if (char.ToLower(input.KeyChar) != 'y')
+                {
+                    endLoopMessage?.PrintToConsole();
+                    return false;
                 }
                 else
                 {

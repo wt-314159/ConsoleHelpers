@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace ConsoleHelpers.Helpers
+namespace ConsoleHelpers
 {
     internal static class ArrayExtensions
     {
