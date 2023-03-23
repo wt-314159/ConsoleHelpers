@@ -28,7 +28,7 @@ namespace ConsoleHelpers
             Display(settings, Array.Empty<string>());
         }
 
-        protected override void ShowMainMenuOptionIfTrue(bool _, StringBuilder __, int ___)
+        protected override void ShowMainMenuOptionIfTrue(bool _, StringBuilder __, MenuSettings ___)
         {
             return;
         }
