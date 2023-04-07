@@ -98,13 +98,9 @@
             Func<bool> action,
             string exitMessage = _exitMessage)
         {
-            while (true)
-            {
-                var repeat = !action();
-                if (repeat) { continue; }
-                Console.WriteLine();
-                Console.WriteLine(exitMessage);
-            }
+            while (!action()) { }
+            Console.WriteLine();
+            Console.WriteLine(exitMessage);
         }
 
         internal static string[]? GetOptionChoiceWithParams(
