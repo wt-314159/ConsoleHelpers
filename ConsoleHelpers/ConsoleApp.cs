@@ -2,6 +2,9 @@
 {
     public static class ConsoleApp
     {
+        private const string _repeatMessage = "To run again, press 'y', to stop press any other key, to quit press 'Esc'";
+        private const string _exitMessage = "Exiting program...";
+
         /// <summary>
         /// Method to get input from the user. This will loop and call <see cref="Console.ReadLine"/> 
         /// until the <paramref name="predicate"/> condition is met.
@@ -56,8 +59,8 @@
         /// <returns>True if the user pressed 'Esc', false if they pressed any key other than 'y'.</returns>
         public static bool LoopProgram(
             Action action,
-            string repeatMessage = "To run again, press 'y', to stop press any other key, to quit press 'Esc'",
-            string exitMessage = "Exiting program...",
+            string repeatMessage = _repeatMessage,
+            string exitMessage = _exitMessage,
             string? endLoopMessage = null)
         {
             while (true)
@@ -83,6 +86,24 @@
                 {
                     Console.WriteLine();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Method to loop and repeatedly call a given function until it returns false.
+        /// </summary>
+        /// <param name="action">The function to repeat that returns a bool.</param>
+        /// <param name="exitMessage">The message to show when exiting the loop.</param>
+        public static void LoopProgram(
+            Func<bool> action,
+            string exitMessage = _exitMessage)
+        {
+            while (true)
+            {
+                var repeat = !action();
+                if (repeat) { continue; }
+                Console.WriteLine();
+                Console.WriteLine(exitMessage);
             }
         }
 
