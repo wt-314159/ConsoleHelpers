@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace ConsoleHelpers
 {
-    internal class Menu<T> : MenuItem<T>
+    public class Menu<T> : MenuItem<T>
     {
         public Menu(params IMenuItem<T>[] menuItems) : this("Menu", null, menuItems)
         { }
